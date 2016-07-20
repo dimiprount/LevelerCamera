@@ -3,10 +3,7 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         config {
-            keyAlias 'oDpe-1726'
-            keyPassword 'oDpe-1726'
-            storeFile file('/home/dimprount/AndroidStudioProjects/Myapks/levelercamera.jks')
-            storePassword 'oDpe-1726'
+            
         }
     }
     compileSdkVersion 23
