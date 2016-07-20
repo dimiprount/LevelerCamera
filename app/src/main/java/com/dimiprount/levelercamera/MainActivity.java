@@ -29,15 +29,15 @@ import java.io.IOException;
 public class MainActivity extends Activity implements SurfaceHolder.Callback, SensorEventListener {
 
 
-    //private static final String TAG = "CamTestActivity";
+    
     TextView tvX, tvY;
     Sensor s;
     SensorManager sm;
     Camera cam;
-    SurfaceView surfaceView;    //Provides a dedicated drawing surface embedded inside of a view hierarchy. You can control the format of this surface and, if you like, its size; the SurfaceView takes care of placing the surface at the correct location on the screen
-    SurfaceHolder surfaceHolder;    // Abstract interface to someone holding a display surface. Allows you to control the surface size and format, edit the pixels in the surface, and monitor changes to the surface.
+    SurfaceView surfaceView;
+    SurfaceHolder surfaceHolder;
     boolean didItWork = false;
-    LayoutInflater controlInflater = null;  // Instantiates a layout XML file into its corresponding View objects.
+    LayoutInflater controlInflater = null;
     ViewGroup.LayoutParams layoutParamsControl;
     Camera.Parameters params;
 
@@ -52,7 +52,6 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Se
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-        // getWindow() to get window and set it's pixel format which is UNKNOWN
         getWindow().setFormat(PixelFormat.UNKNOWN);
         surfaceView = (SurfaceView) findViewById(R.id.preview_view);
         surfaceView.setOnClickListener(new View.OnClickListener() {
@@ -73,28 +72,27 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Se
         });
 
 
-        surfaceHolder = surfaceView.getHolder();    // Return the SurfaceHolder providing access and control over this SurfaceView's underlying surface.
+        surfaceHolder = surfaceView.getHolder();
         surfaceHolder.addCallback(this);
 
         controlInflater = LayoutInflater.from(getBaseContext());
         View viewControl = controlInflater.inflate(R.layout.control, new LinearLayout(getBaseContext()), false);
 
-        layoutParamsControl = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);  // width, height
+        layoutParamsControl = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         this.addContentView(viewControl, layoutParamsControl);
 
         tvX = (TextView) findViewById(R.id.tvX);
         tvY = (TextView) findViewById(R.id.tvY);
 
-        sm = (SensorManager) getSystemService(SENSOR_SERVICE);   // Create Sensor Manager
-        s = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER); // Accelerometer Sensor
-        sm.registerListener(this, s, SensorManager.SENSOR_DELAY_NORMAL);// Register Sensor Listener
-        // SensorManager.SENSOR_DELAY_NORMAL: report data to the screen at a normal speed
+        sm = (SensorManager) getSystemService(SENSOR_SERVICE);
+        s = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sm.registerListener(this, s, SensorManager.SENSOR_DELAY_NORMAL);
 
         zoomControls = (ZoomControls) findViewById(R.id.zoomControls);
 
         zoomControls.setIsZoomInEnabled(true);
         zoomControls.setIsZoomOutEnabled(true);
-        zoomControls.setZoomSpeed(20);  // 20: milliseconds (float)
+        zoomControls.setZoomSpeed(20)
     }
 
     protected void onResume() {
@@ -130,16 +128,15 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Se
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        // if (cam == null) {
+       
         cam = Camera.open();
-        //   }
+        
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         if (didItWork) {
             cam.stopPreview();
-            // cam.release();
             didItWork = false;
         }
 
@@ -220,10 +217,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Se
     }
 
     Camera.ShutterCallback myShutterCallback = new Camera.ShutterCallback() {
-        /** ShutterCallback: Called as near as possible to the moment when a photo is captured from the sensor.
-         * This is a good opportunity to play a shutter sound or give other feedback of camera operation.
-         * This may be some time after the photo was triggered, but some time before the actual data is available.
-         */
+        
         @Override
         public void onShutter() {
 
@@ -233,9 +227,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Se
     Camera.PictureCallback myPictureCallback_RAW = new Camera.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
-            /**Called when image data is available after a picture is taken.
-             * The format of the data depends on the context of the callback and Camera.Parameters settings.
-             */
+            
 
 
         }
@@ -244,24 +236,8 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Se
     Camera.PictureCallback myPictureCallback_JPG = new Camera.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
-           /* Uri uriTarget = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, new ContentValues());
-            OutputStream imageFile;
-
-            try {
-                assert uriTarget != null;
-                imageFile = getContentResolver().openOutputStream(uriTarget);
-                assert imageFile != null;
-                imageFile.write(data);              // wrong
-                imageFile.flush();
-                imageFile.close();
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
+           
             new SaveImageTask().execute(data);
-            //  Log.d(TAG, "onPictureTaken - jpeg");
             cam.startPreview();
 
         }
@@ -273,7 +249,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Se
         protected Void doInBackground(byte[]... data) {
             FileOutputStream fos;
 
-            // Write to SD Card
+            
             try {
                 File sdCard = Environment.getExternalStorageDirectory();
                 File dir = new File(sdCard.getAbsolutePath() + "/Leveler Camera");
@@ -287,7 +263,6 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Se
                 fos.flush();
                 fos.close();
 
-                //    Log.d(TAG, "onPictureTaken - wrote bytes: " + data.length + " to " + outFile.getAbsolutePath());
 
                 refreshGallery(finalFile);
             } catch (IOException e) {
@@ -316,7 +291,6 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback, Se
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        // Not in use
     }
 
 }
